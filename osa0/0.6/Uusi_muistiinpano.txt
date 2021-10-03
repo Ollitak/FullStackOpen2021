@@ -1,0 +1,14 @@
+
+note over selain:
+kun käyttäjä painaa nappia
+selain suorittaa js-koodissa
+napille määritetyn tapahtumakäsittelijän:
+1. formin teksistä muodostetaan olio
+2. olio lisätään js-koodin taulukkoon "notes"
+3. kutsutaan redrawNotes() sivun päivittämiseksi
+4. lähetetään note-olio palvelimelle
+end note
+
+
+selain -> palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+palvelin --> selain: 201 created
