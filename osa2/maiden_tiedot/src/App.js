@@ -6,11 +6,15 @@ import axios from 'axios'
 const App = () => {
   const [filter, setFilter] = useState("")
   const [countries, setCountries] = useState([])
+  const [weath, setWeath] = useState([])
+  let countriesToShow = []
   
+
   const handleCountryChange = (event) => {
     console.log("input log: ", event.target.value)
     setFilter(event.target.value)
   }
+
 
   useEffect(() => {
     axios.get("https://restcountries.com/v3.1/all")
@@ -20,14 +24,31 @@ const App = () => {
     )  
   },[])
 
+
+  useEffect(() => {
+    if(countriesToShow.length === 1){
+      const api_key = process.env.REACT_APP_API_KEY
+      const country = countriesToShow[0].capital
+      const endPointURL = "http://api.weatherapi.com/v1/current.json?key="+api_key+"&q="+country
+      axios
+        .get(endPointURL)
+        .then((response) => {
+            const list = [response.data.current.temp_c, response.data.current.wind_mph, response.data.current.wind_dir]
+            setWeath(list)
+          })
+      }
+    }, [filter]
+)
+
+
   const showOneCountry = (name) => {
     const handler = () => {
       setFilter(name)
+    }
+    return handler
   }
-  return handler
-}
+
   
-  let countriesToShow = []
   countries.forEach(c => {
     if(c.name.common.toLowerCase().includes(filter.toLowerCase())){
       // some langugage objects might become empty
@@ -47,6 +68,7 @@ const App = () => {
     }
   })
 
+
   if (countriesToShow.length > 10){
     return (
     <div>
@@ -55,7 +77,7 @@ const App = () => {
     </div>
     )
 
-  } else if(countriesToShow.length > 1){
+  } else if (countriesToShow.length > 1){
     return (
       <div>
         Find countries: <input value={filter} onChange={handleCountryChange} />
@@ -93,6 +115,14 @@ const App = () => {
         <div>
           <img src={countriesToShow[0].flags} alt="Country flag"></img>
         </div>
+        <div>
+          <h3>Weather in {countriesToShow[0].capital}</h3>
+          <ul>
+            <p>Temperature: {weath[0]} {" celsius"}</p>
+            <p>Wind speed: {weath[1]} {" mph"}</p>
+            <p>Wind direction: {weath[2]}</p>
+          </ul>
+        </div>
       </div>
       )
 
@@ -107,10 +137,5 @@ const App = () => {
   }
 
 }
-
-
-  
-  
-  
 
 export default App
