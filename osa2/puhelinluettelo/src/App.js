@@ -2,6 +2,57 @@ import React, { useState, useEffect } from 'react'
 import personService from './services/personService'
 
 
+const Notification = ({message}) => {
+  
+  const style = {
+    color: 'green',
+    fontStyle: 'italic',
+    fontSize: 20,
+    background: 'lightgrey',
+    padding: "10px",
+    marginBottom: "10px",
+    borderRadius: "solid",
+    borderStyle: "solid"
+  }
+  
+  if(message === null){
+    return null
+  }
+
+  return (
+    <div style={style}>
+      {message}
+    </div>
+  )
+
+}
+
+const ErrorNotification = ({message}) => {
+  
+  const style = {
+    color: 'red',
+    fontStyle: 'italic',
+    fontSize: 20,
+    background: 'lightgrey',
+    padding: "10px",
+    marginBottom: "10px",
+    borderRadius: "solid",
+    borderStyle: "solid"
+  }
+  
+  if(message === null){
+    return null
+  }
+
+  return (
+    <div style={style}>
+      {message}
+    </div>
+  )
+
+}
+
+
 const Filter = (props) => {
 return(
   <div>
@@ -45,6 +96,9 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [ addMessage, setAddMessage ] = useState(null)
+  const [ errorMessage, setErrorMessage ] = useState(null)
+
 
   useEffect(() => {
     personService
@@ -81,9 +135,13 @@ const App = () => {
 
       personService
         .deletePerson(id)
-        .then(() =>
+        .then(() => {
           setPersons(newPersons)
-        )
+          setAddMessage(`${person.name} succesfully deleted`)
+          setTimeout(() => {
+            setAddMessage(null)
+          }, 3000)
+        })
     }  
   }
 
@@ -108,10 +166,13 @@ const App = () => {
       personService
         .postNew(newPerson)
         .then(response => {
-          console.log(response)
           setPersons(persons.concat(response))
           setNewName("")
           setNewNumber("")
+          setAddMessage(`${response.name} was added to the phonebook`)
+          setTimeout(() => {
+            setAddMessage(null)
+          }, 3000)
         })
 
     } else {
@@ -124,15 +185,29 @@ const App = () => {
             setPersons(persons.map(person => person === oldPerson ? response : person))
             setNewName("")
             setNewNumber("")
+            setAddMessage(`Number of ${response.name} was changed to ${response.number}`)
+            setTimeout(() => {
+              setAddMessage(null)
+            }, 3000)
+          })
+          .catch(error => {
+            setErrorMessage(`${oldPerson.name} was already removed from the list`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 3000)
           })
       }
     }
   }
+  console.log(addMessage)
 
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={addMessage} />
+      <ErrorNotification message={errorMessage} />
+
       <Filter makeFilter={makeFilter} filter={filter} />
       
 
