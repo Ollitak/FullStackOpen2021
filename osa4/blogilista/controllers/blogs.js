@@ -3,23 +3,24 @@ const Blog = require('../models/blog')
 const logger = require('../utils/logger')
 
 
-blogsRouter.get('/', (request, response) => {
+blogsRouter.get('/', async (request, response) => {
     logger.info("/api/blogs get request")
-    Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
+    const blogsFound = await Blog.find({})
+    response.json(blogsFound)
 })
 
-blogsRouter.post('/', (request, response) => {
+blogsRouter.post('/', async (request, response, next) => {
+  if(!request.body.likes){
+    request.body.likes = 0;
+  }
   const blog = new Blog(request.body)
 
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
+  try {
+    const result = await blog.save()
+    response.status(201).json(result)
+  } catch(exception) {
+    next(exception)
+  }
 })
 
 module.exports = blogsRouter
