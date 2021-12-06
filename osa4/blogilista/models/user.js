@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
       type: String,
       minlength: 3
     },
-    notes: [
+    blogs: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Blog'
