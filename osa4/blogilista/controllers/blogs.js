@@ -22,17 +22,7 @@ blogsRouter.post('/', async (request, response, next) => {
 
   const token = request.token
 
-  let decodedToken
-  try {
-    decodedToken = jwt.verify(token, process.env.SECRET)
-  } catch(e) {
-    next(e)
-  }
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   if(!request.body.likes){
     body.likes = 0;
@@ -64,22 +54,8 @@ blogsRouter.post('/', async (request, response, next) => {
 
 // REMOVE ONE
 blogsRouter.delete('/:id', async (request, response, next) => {
-  logger.info("delete request")
-
-  const token = request.token
-
-  let decodedToken
-  try {
-    decodedToken = jwt.verify(token, process.env.SECRET)
-  } catch(e) {
-    next(e)
-  }
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
-
   // Haetaan lähettänyt käyttäjä
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   try {
     // Haetaan poistettava blogi id-polkuparametrin avulla
@@ -94,10 +70,10 @@ blogsRouter.delete('/:id', async (request, response, next) => {
         logger.info("succesfully deleted")
         response.status(204).end()
       }
-  } else {
-    logger.info("id not found - returning 400")
-    response.status(400).end()
-  }
+    } else {
+      logger.info("id not found - returning 400")
+      response.status(400).end()
+    }
 }
   catch(e) {
     next(e)
