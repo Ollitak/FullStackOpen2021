@@ -3,6 +3,8 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const logger = require('../utils/logger')
 const jwt = require('jsonwebtoken')
+const middleware = require('../utils/middleware')
+
 
 
 // GET ALL
@@ -15,7 +17,7 @@ blogsRouter.get('/', async (request, response) => {
 
 
 // POST
-blogsRouter.post('/', async (request, response, next) => {
+blogsRouter.post('/', middleware.userExtractor, async (request, response, next) => {
   logger.info("post request")
 
   const body = request.body
@@ -53,7 +55,7 @@ blogsRouter.post('/', async (request, response, next) => {
 })
 
 // REMOVE ONE
-blogsRouter.delete('/:id', async (request, response, next) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, next) => {
   // Haetaan lähettänyt käyttäjä
   const user = request.user
 
