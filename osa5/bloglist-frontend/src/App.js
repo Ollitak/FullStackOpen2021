@@ -18,11 +18,13 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService.getAll().then(blogs => {
+      console.log('useeffect --- fetching blogs')
       setBlogs( blogs )
-    )  
+      //setShowinfo(Array(blogs.length).fill(0))
+    }
+    )
   }, [])
 
   useEffect(() => {
@@ -120,6 +122,8 @@ const App = () => {
       <button onClick={handleLogout}> log out </button>
     </div>)
   }
+
+
 
 
   return (
