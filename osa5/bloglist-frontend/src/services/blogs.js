@@ -13,7 +13,6 @@ const getAll = () => {
 }
 
 const addBlog = async (request) => {
-  console.log('adding blog... current token: ' , token)
   const config = {
     headers: { Authorization: token },
   }
