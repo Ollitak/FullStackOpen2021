@@ -20,7 +20,8 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
-      console.log('useeffect --- fetching blogs')
+      console.log('retreiving blogs...')
+      blogs.sort((a,b) => b.likes-a.likes)
       setBlogs( blogs )
       //setShowinfo(Array(blogs.length).fill(0))
     }
@@ -84,7 +85,10 @@ const App = () => {
     try{
       blogFormRef.current.toggleVisibility()
       const addedBlog = await blogService.addBlog(blog)
-      setBlogs(blogs.concat(addedBlog))
+      console.log(addedBlog)
+      const newList = blogs.concat(addedBlog)
+      setBlogs(newList)
+
       console.log('succesfully added ', addedBlog.title, '....')
       setErrorMessage('blog succesfully added... title: ' + addedBlog.title)
       setTimeout(() => {
@@ -96,8 +100,53 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
+    }
   }
+
+  const updatingBlog = async (blog, id) => {
+    try {
+      const updatedBlog = await blogService.updateBlog(blog, id)
+      
+      let newBlogSet = blogs.filter(b => b.id.toString() !== id)
+      newBlogSet = newBlogSet.concat(updatedBlog)
+      newBlogSet.sort((a,b) => b.likes-a.likes)
+      setBlogs(newBlogSet)
+
+      console.log('succesfully updated ', updatedBlog.title, '....')
+      setErrorMessage('blog succesfully updated... title: ' + updatedBlog.title)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    } catch (e) {
+      console.log("updating the blog failed")
+      setErrorMessage('updating the blog failed')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
+
+  const removingBlog = async (id) => {
+    try {
+      await blogService.deleteBlog(id)
+      console.log('succesfully deleted ')
+      let newBlogSet = blogs.filter(b => b.id.toString() !== id)
+      setBlogs(newBlogSet)
+      setErrorMessage('blog succesfully updated')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    } catch (e) {
+      console.log("removing the blog failed")
+      setErrorMessage('removing the blog failed')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+
+  }
+
+  
 
   const handleLogout = (event) => {
     event.preventDefault()
@@ -136,7 +185,7 @@ const App = () => {
 
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updatingBlog={updatingBlog} removingBlog={removingBlog} user={user} />
       )}
     </div>
   )

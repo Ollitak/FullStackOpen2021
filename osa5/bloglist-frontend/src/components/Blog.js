@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 
-const Blog = ({blog}) => {
+const Blog = ({blog, updatingBlog, removingBlog, user}) => {
   // Tila, jolla kontrolloidaan näytetäänkö blogi kokonaan vai lyhyesti
   // View talletnaa tilaan blogin id, jos halutaan näyttää kaikki tiedot
   // Hide poistaa tilasta blogin id:n
   const [showinfo, setShowinfo] = useState([])
-
 
   const blogStyle = {
     paddingTop: 10,
@@ -14,7 +13,6 @@ const Blog = ({blog}) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  console.log(showinfo)
 
   const handleViewBlog = () => {
     setShowinfo(showinfo.concat(blog.id.toString()))
@@ -24,6 +22,25 @@ const Blog = ({blog}) => {
     setShowinfo(showinfo.filter(i => i.toString() !== blog.id.toString()))
   }
 
+  const handleUpdate = async () => {
+    console.log('updating blog...')
+    const updatedblog = {
+      user: blog.user.id,
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url
+    }
+    await updatingBlog(updatedblog, blog.id.toString())
+  }
+
+  const handleDelete = async () => {
+    console.log('removing blog...')
+    await removingBlog(blog.id.toString())
+  }
+
+
+
   const shortinformation = () => {
     return(
       <div>
@@ -32,6 +49,12 @@ const Blog = ({blog}) => {
       </div> 
       ) 
   }
+
+  let currentUser
+  if(user) currentUser = user.username
+  else currentUser = null
+
+
   const longinformation = () => {
     return(
       <div style={blogStyle}>
@@ -41,10 +64,14 @@ const Blog = ({blog}) => {
         Author: {blog.author}
         <br/>
         Likes: {blog.likes}
-        <button> like </button>
+        <button onClick={handleUpdate}> like </button>
         <br/>
-        Url: {blog.url}
+        Username: {blog.user.username}
         <br/>
+        {blog.user.username === currentUser
+          ? <button onClick={handleDelete}> remove </button>
+          : null
+        }
       </div> 
       ) 
   }

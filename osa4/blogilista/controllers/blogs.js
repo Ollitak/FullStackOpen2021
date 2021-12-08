@@ -48,7 +48,12 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response, next) 
     // syystä käytin findIdandUpdate()-metodia, jolla näyttäisi toimivan
     // hyvin. En kylläkään tiedä miksi materiaalissa oli toiminut Savella?...
     await User.findByIdAndUpdate(user._id, user, {new: true})
-    response.status(201).json(result)
+
+    // Haetaan vielä juuri lisätty blogi uudelleen, jotta saadaan .populate() toimimaan
+    // ja täten siis lähetettyä user-tiedot
+    const returnVal = await Blog.findById(result._id).populate('user')
+
+    response.status(201).json(returnVal)
   } catch(e) {
     next(e)
   }
@@ -87,7 +92,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
   logger.info("put request")
   try {
     const updatedBlog = 
-      await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true})
+      await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true}).populate('user')
     response.json(updatedBlog)
 
   } catch(e) {
