@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({blog, updatingBlog, removingBlog, user}) => {
+const Blog = ({ blog, updatingBlog, removingBlog, user }) => {
   // Tila, jolla kontrolloidaan näytetäänkö blogi kokonaan vai lyhyesti
   // View talletnaa tilaan blogin id, jos halutaan näyttää kaikki tiedot
   // Hide poistaa tilasta blogin id:n
@@ -46,8 +46,8 @@ const Blog = ({blog, updatingBlog, removingBlog, user}) => {
       <div>
         {blog.title}
         <button onClick={handleViewBlog}> view </button>
-      </div> 
-      ) 
+      </div>
+    )
   }
 
   let currentUser
@@ -72,8 +72,8 @@ const Blog = ({blog, updatingBlog, removingBlog, user}) => {
           ? <button onClick={handleDelete}> remove </button>
           : null
         }
-      </div> 
-      ) 
+      </div>
+    )
   }
 
   return (
@@ -83,7 +83,7 @@ const Blog = ({blog, updatingBlog, removingBlog, user}) => {
     </div>
   )
 
-  
+
 }
 
 

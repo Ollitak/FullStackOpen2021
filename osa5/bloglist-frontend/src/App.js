@@ -39,25 +39,25 @@ const App = () => {
   }, [])
 
   const loginForm = () => (
-      <form onSubmit={handleLogin}>
-        <h2>Please, log in</h2>
-        <br/>
-        Username: 
-        <input type="text" value={username} onChange={e=>setUsername(e.target.value)}></input>
-        <br/>
-        Password:  
-        <input type="password" value={password} onChange={e=>setPassword(e.target.value)}></input>
-        <br/>
-        <button type="submit">login</button>
-      </form>
+    <form onSubmit={handleLogin}>
+      <h2>Please, log in</h2>
+      <br/>
+        Username:
+      <input type="text" value={username} onChange={e => setUsername(e.target.value)}></input>
+      <br/>
+        Password:
+      <input type="password" value={password} onChange={e => setPassword(e.target.value)}></input>
+      <br/>
+      <button type="submit">login</button>
+    </form>
   )
 
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('trying to log in with', username, password, ' ....')
-    
+
     try {
-      const user = await loginService.login({username, password})
+      const user = await loginService.login({ username, password })
       console.log('succesfull - logged in')
       console.log('returned token: ', user.token)
       window.localStorage.setItem(
@@ -71,9 +71,9 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
-      
+
     } catch(e) {
-      console.log("login failed ... please check your credentials")
+      console.log('login failed ... please check your credentials')
       setErrorMessage('wrong credentials, please check your username and password')
       setTimeout(() => {
         setErrorMessage(null)
@@ -95,7 +95,7 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     } catch (e) {
-      console.log("sending a blog to the server failed")
+      console.log('sending a blog to the server failed')
       setErrorMessage('sending a blog to the server failed')
       setTimeout(() => {
         setErrorMessage(null)
@@ -106,7 +106,7 @@ const App = () => {
   const updatingBlog = async (blog, id) => {
     try {
       const updatedBlog = await blogService.updateBlog(blog, id)
-      
+
       let newBlogSet = blogs.filter(b => b.id.toString() !== id)
       newBlogSet = newBlogSet.concat(updatedBlog)
       newBlogSet.sort((a,b) => b.likes-a.likes)
@@ -118,7 +118,7 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     } catch (e) {
-      console.log("updating the blog failed")
+      console.log('updating the blog failed')
       setErrorMessage('updating the blog failed')
       setTimeout(() => {
         setErrorMessage(null)
@@ -137,7 +137,7 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     } catch (e) {
-      console.log("removing the blog failed")
+      console.log('removing the blog failed')
       setErrorMessage('removing the blog failed')
       setTimeout(() => {
         setErrorMessage(null)
@@ -146,7 +146,7 @@ const App = () => {
 
   }
 
-  
+
 
   const handleLogout = (event) => {
     event.preventDefault()
@@ -156,9 +156,9 @@ const App = () => {
 
   const createBlogForm = () => {
     return (
-      <Togglable ref={blogFormRef}>
+      <Togglable ref={blogFormRef} buttonLabel={'create a new blog'}>
         <CreateBlog
-         addingBlog={addingBlog}
+          addingBlog={addingBlog}
         />
       </Togglable>
     )
@@ -166,10 +166,10 @@ const App = () => {
 
   const logout = () => {
     return (
-    <div>
-      <b> {user.username} logged in </b>
-      <button onClick={handleLogout}> log out </button>
-    </div>)
+      <div>
+        <b> {user.username} logged in </b>
+        <button onClick={handleLogout}> log out </button>
+      </div>)
   }
 
 
