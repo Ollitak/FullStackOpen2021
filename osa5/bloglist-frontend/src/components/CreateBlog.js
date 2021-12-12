@@ -6,10 +6,10 @@ const CreateBlog = ({ addingBlog }) => {
   const [author, setAuthor] = useState([])
   const [url, setUrl] = useState([])
 
-  const handleAddingBlog = async (event) => {
+  const handleAddingBlog = (event) => {
     event.preventDefault()
     console.log('trying to add blog', title, author, ' ...')
-    await addingBlog({ title, author, url })
+    addingBlog({ title, author, url })
     setTitle('')
     setAuthor('')
     setUrl('')
@@ -21,13 +21,13 @@ const CreateBlog = ({ addingBlog }) => {
         <h2> create new blog</h2>
         <form onSubmit={handleAddingBlog}>
           title:
-          <input type="text" value={title} onChange={e => setTitle(e.target.value)}></input>
+          <input id="titleInput" type="text" value={title} onChange={e => setTitle(e.target.value)}></input>
           <br/>
           author:
-          <input type="text" value={author} onChange={e => setAuthor(e.target.value)}></input>
+          <input id="authorInput" type="text" value={author} onChange={e => setAuthor(e.target.value)}></input>
           <br/>
           url:
-          <input type="text" value={url} onChange={e => setUrl(e.target.value)}></input>
+          <input id="urlInput" type="text" value={url} onChange={e => setUrl(e.target.value)}></input>
           <br/>
           <button type="submit">create</button>
         </form>
