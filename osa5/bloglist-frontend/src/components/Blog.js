@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 
 const Blog = ({ blog, updatingBlog, removingBlog, user }) => {
-  // Tila, jolla kontrolloidaan näytetäänkö blogi kokonaan vai lyhyesti
-  // View talletnaa tilaan blogin id, jos halutaan näyttää kaikki tiedot
-  // Hide poistaa tilasta blogin id:n
   const [showinfo, setShowinfo] = useState([])
 
   const blogStyle = {
@@ -57,7 +54,7 @@ const Blog = ({ blog, updatingBlog, removingBlog, user }) => {
 
   const longinformation = () => {
     return(
-      <div style={blogStyle}>
+      <div className={'blog'}>
         Title: {blog.title}
         <button onClick={handleHideBlog}> hide </button>
         <br/>

@@ -5,8 +5,8 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-const testUser = 'Kayttaja'
-const testPassword = 'Olli123'
+const testUser = ''
+const testPassword = ''
 
 
 const App = () => {
@@ -43,12 +43,12 @@ const App = () => {
       <h2>Please, log in</h2>
       <br/>
         Username:
-      <input type="text" value={username} onChange={e => setUsername(e.target.value)}></input>
+      <input id='username' type="text" value={username} onChange={e => setUsername(e.target.value)}></input>
       <br/>
         Password:
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)}></input>
+      <input id='password' type="password" value={password} onChange={e => setPassword(e.target.value)}></input>
       <br/>
-      <button type="submit">login</button>
+      <button id='loginbutton' type="submit">login</button>
     </form>
   )
 
@@ -132,7 +132,7 @@ const App = () => {
       console.log('succesfully deleted ')
       let newBlogSet = blogs.filter(b => b.id.toString() !== id)
       setBlogs(newBlogSet)
-      setErrorMessage('blog succesfully updated')
+      setErrorMessage('blog succesfully removed')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
