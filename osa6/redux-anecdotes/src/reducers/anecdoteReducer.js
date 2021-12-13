@@ -36,7 +36,7 @@ const reducer = (state = initialState, action) => {
       }
       const newState = state.map(a => a.id === id ? changedAnecdote : a)
       return sortAnecdotes([...newState])
-    case 'ADDANECDOTE':
+    case 'CREATE_ANECDOTE':
       const anecdoteToBeAdded = {
         content: action.data,
         id: getId(),
@@ -57,7 +57,7 @@ export const giveAVote = (id) => {
 
 // Action creator: CreateAnecdote
 export const createNew = (content) => {
-  return {type: "ADDANECDOTE", data: content}
+  return {type: "CREATE_ANECDOTE", data: content}
 }
 
 
