@@ -11,15 +11,14 @@ const NewAnecdote = () => {
 
     const addAnecdote = async (event) => {
         event.preventDefault()
-        const newContent = event.target.anecdote.value
-        event.target.anecdote.value = ''
-        const newAnecdote = await anecdoteService.createNew(newContent) 
-        dispatch(createNew(newAnecdote))
 
-        dispatch(newNotification(`${newContent} created :)`))
-        setTimeout(function(){
-            dispatch(newNotification(null))
-        }, 5000);
+        const newContent = event.target.anecdote.value
+        dispatch(createNew(newContent))
+
+        event.target.anecdote.value = '' 
+
+        dispatch(newNotification(`${newContent} created :)`,5000))
+
     }
 
     return (

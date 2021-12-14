@@ -1,3 +1,4 @@
+import anecdoteService from '../services/anecdotes'
 
 const reducer = (state = [], action) => {
   // Function to sort anecdotes when VOTE is triggered
@@ -7,14 +8,7 @@ const reducer = (state = [], action) => {
 
   switch(action.type){
     case 'VOTE':
-      const id = action.data.id
-      const anecdoteToBeUpdated = state.find(a => a.id === id)
-      const changedAnecdote = {
-        content: anecdoteToBeUpdated.content,
-        id: anecdoteToBeUpdated.id,
-        votes: anecdoteToBeUpdated.votes + 1
-      }
-      const newState = state.map(a => a.id === id ? changedAnecdote : a)
+      const newState = state.map(a => a.id === action.data.id ? action.data : a)
       return sortAnecdotes([...newState])
     case 'CREATE_ANECDOTE':      
       return state.concat(action.data)
@@ -27,18 +21,27 @@ const reducer = (state = [], action) => {
 }
 
 // Action creator: vote
-export const giveAVote = (id) => {
-  return {type: "VOTE", data: {id: id}}
+export const giveAVote = (anecdote) => {
+  return async dispatch => {
+    const updated = await anecdoteService.updateLikes(anecdote)
+    dispatch({type: "VOTE", data: updated})
+  }
 }
 
 // Action creator: create anecdote
 export const createNew = (content) => {
-  return {type: "CREATE_ANECDOTE", data: content}
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createNew(content)
+    dispatch({type: "CREATE_ANECDOTE", data: newAnecdote})
+  }
 }
 
 // Action creator: initialize anecdotes
-export const initialize = (content) => {
-  return {type: "INIT_ANECDOTES", data: content}
+export const initialize = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch({type: "INIT_ANECDOTES", data: anecdotes})
+  }
 }
 
 

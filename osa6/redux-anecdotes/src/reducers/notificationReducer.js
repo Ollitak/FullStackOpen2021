@@ -10,8 +10,13 @@ const anecdoteReducer = (state = initialState, action) => {
 }
 
 // Action creator: new notification
-export const newNotification= (notification) => {
-    return {type: 'NEW_NOTIFICATION', data: notification}
+export const newNotification= (notification, time) => {
+    return async dispatch => {
+        await dispatch({type: 'NEW_NOTIFICATION', data: notification})
+        setTimeout(function(){
+            dispatch({type: 'NEW_NOTIFICATION', data: null})
+        }, time);
+    }
 }
 
 export default anecdoteReducer

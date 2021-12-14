@@ -17,17 +17,12 @@ const Anecdotes = () => {
     const anecdotes = unfilteredAnecdotes.filter(a => a.content.includes(filterState))
 
 
-    const vote = (id) => {
-        dispatch(giveAVote(id))
+    const vote = (anecdote) => {
+        dispatch(giveAVote(anecdote))
         
         // Etsitään haluttu anekdootti, päivitetään
         // notificationin tilaa ja 5 sekunnin päästä takaisin
-        const voted = anecdotes.find(a => a.id === id)
-        dispatch(newNotification(`you voted ${voted.content} :)`))
-
-        setTimeout(function(){
-            dispatch(newNotification(null))
-        }, 5000);
+        dispatch(newNotification(`you voted ${anecdote.content} :)`,5000))
     }
 
     return (
@@ -39,7 +34,7 @@ const Anecdotes = () => {
             </div>
             <div>
                 has {anecdote.votes}
-                <button onClick={() => vote(anecdote.id)}>vote</button>
+                <button onClick={() => vote(anecdote)}>vote</button>
             </div>
             </div>
             )}
