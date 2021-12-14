@@ -1,7 +1,6 @@
 const initialState = ""
 
 const filterReducer = (state = initialState, action) => {
-    console.log("filter reducer called")
     switch(action.type){
         case 'UPDATE_FILTER':
             return action.data

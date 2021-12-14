@@ -20,8 +20,8 @@ const Anecdotes = () => {
     const vote = (id) => {
         dispatch(giveAVote(id))
         
-        // Etsitään haluttu anekdootti ja päivitetään
-        // notificationin tilaa + 5 sekunnin päästä takaisin
+        // Etsitään haluttu anekdootti, päivitetään
+        // notificationin tilaa ja 5 sekunnin päästä takaisin
         const voted = anecdotes.find(a => a.id === id)
         dispatch(newNotification(`you voted ${voted.content} :)`))
 
