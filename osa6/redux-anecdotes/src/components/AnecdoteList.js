@@ -6,8 +6,16 @@ import { newNotification } from '../reducers/notificationReducer'
 
 
 const Anecdotes = () => {
-    const anecdotes = useSelector(state => state.anecdotes)
     const dispatch = useDispatch()
+
+    // Haetaan filterin tila
+    const filterState = useSelector(state => state.filter)
+
+    // Haetaan anekdootit storesta (ilman filteröintiä)
+    const unfilteredAnecdotes = useSelector(state => state.anecdotes)
+    // Filteröidään vain filterin mukaiset anekdootit
+    const anecdotes = unfilteredAnecdotes.filter(a => a.content.includes(filterState))
+
 
     const vote = (id) => {
         dispatch(giveAVote(id))
@@ -20,7 +28,6 @@ const Anecdotes = () => {
         setTimeout(function(){
             dispatch(newNotification(null))
         }, 5000);
-        
     }
 
     return (
