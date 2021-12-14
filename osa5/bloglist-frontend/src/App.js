@@ -23,7 +23,6 @@ const App = () => {
       console.log('retreiving blogs...')
       blogs.sort((a,b) => b.likes-a.likes)
       setBlogs( blogs )
-      //setShowinfo(Array(blogs.length).fill(0))
     }
     )
   }, [])
