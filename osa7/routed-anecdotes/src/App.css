@@ -1,0 +1,31 @@
+a {
+    color: skyblue;
+}
+
+
+a:hover {
+    color:blue;
+}
+
+
+Body {
+    color: white;
+    background-color: black;
+}
+
+.menu:link, .menu:visited {
+    background-color: grey;
+    color: white;
+    border: 1px solid white;
+    width: 100px;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.menu:hover, .menu:active {
+    background-color: green;
+    color: white;
+  }
+

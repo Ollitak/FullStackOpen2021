@@ -5,6 +5,8 @@ import {
   Switch, Route, Link, useParams, useHistory
 
 } from "react-router-dom"
+import './App.css'
+import useField from './hooks/index'
 
 const Menu = () => {
   const padding = {
@@ -12,9 +14,9 @@ const Menu = () => {
   }
   return (
     <div>
-        <Link style={padding} to="/anecdotes">anecdotes</Link>
-        <Link style={padding} to="/createnew">create new</Link>
-        <Link style={padding} to="/about">about</Link>
+        <Link className="menu" to="/anecdotes">anecdotes</Link>
+        <Link className="menu" to="/createnew">create new</Link>
+        <Link className="menu" to="/about">about</Link>
     </div>
   )
 }
@@ -75,51 +77,63 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  // content object will have all fields of useField() expect reset.
+  // reset function is assigned to a new varialbe name
+  let {reset: contentReset, ...content} = useField('content')
 
+  let {reset: authorReset, ...author} = useField('author')
+
+  let {reset: infoReset, ...info} = useField('info')
+
+  
   const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
+
     // after creating a new anecdote, move to the root
     history.push('/')
 
     // add new notification for 10 seconds
-    props.setNotification(`${content} added`)
+    props.setNotification(`${content.value} added`)
     setTimeout(() => {
       props.setNotification(null)
     }, 10000);
   }
 
+  const handleReset = (e) => {
+    contentReset()
+    authorReset()
+    infoReset()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onReset={handleReset}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="reset">reset</button>
       </form>
     </div>
   )
-
 }
 
 const App = () => {
