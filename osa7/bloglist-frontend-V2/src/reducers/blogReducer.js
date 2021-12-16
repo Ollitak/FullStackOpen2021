@@ -2,7 +2,6 @@ const sortBlogs = (list) => {
   return list.sort((a,b) => b.likes - a.likes)
 }
 
-
 const blogReducer = (state = [], action) => {
   switch(action.type){
   case 'INIT_BLOGS':

@@ -7,20 +7,23 @@ import loginService from './services/login'
 import { useSelector, useDispatch } from 'react-redux'
 import { createNotification } from './reducers/notificationReducer'
 import { addBlog, updateLikes, removeBlog, initialize } from './reducers/blogReducer'
+import { addUser } from './reducers/userReducer'
 
-// declare test user details if you will
-const testUser = ''
-const testPassword = ''
+// declare a test user details if you will
+const testUser = 'Kayttaja'
+const testPassword = 'Olli123'
 
 
 const App = () => {
   const [username, setUsername] = useState(testUser)
   const [password, setPassword] = useState(testPassword)
-  const [user, setUser] = useState(null)
+
+  //const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
   const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
 
   const blogFormRef = useRef()
 
@@ -36,7 +39,7 @@ const App = () => {
     if (loggedUserJSON) {
       console.log('User found from local storage')
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(addUser(user))
       blogService.setToken(user.token)
     }
   }, [])
@@ -69,7 +72,7 @@ const App = () => {
       console.log('user added to the local storage')
       blogService.setToken(user.token)
 
-      setUser(user)
+      dispatch(addUser(user))
       setUsername(testUser)
       setPassword(testPassword)
 
@@ -144,12 +147,10 @@ const App = () => {
 
   }
 
-
-
   const handleLogout = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedUser')
-    setUser(null)
+    dispatch(addUser(null))
   }
 
   const createBlogForm = () => {
@@ -169,7 +170,6 @@ const App = () => {
         <button onClick={handleLogout}> log out </button>
       </div>)
   }
-
 
   return (
     <div>
