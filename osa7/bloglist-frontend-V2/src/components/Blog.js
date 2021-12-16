@@ -15,6 +15,7 @@ const Blog = () => {
   const blog = blogs.find(b => b.id === id.toString())
 
   if(!blog) return null
+  if(!user) return <h2> please, log in to see blogs</h2>
 
   const handleUpdate = async () => {
     const updatedblog = {
