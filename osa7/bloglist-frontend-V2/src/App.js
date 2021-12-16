@@ -6,31 +6,29 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import { useSelector, useDispatch } from 'react-redux'
 import { createNotification } from './reducers/notificationReducer'
+import { addBlog, updateLikes, removeBlog, initialize } from './reducers/blogReducer'
 
-
+// declare test user details if you will
 const testUser = ''
 const testPassword = ''
 
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState(testUser)
   const [password, setPassword] = useState(testPassword)
-  //const [errorMessage, setErrorMessage] = useState('')
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
+  const blogs = useSelector(state => state.blogs)
 
   const blogFormRef = useRef()
 
+
   useEffect(() => {
     blogService.getAll().then(blogs => {
-      console.log('retreiving blogs...')
-      blogs.sort((a,b) => b.likes-a.likes)
-      setBlogs( blogs )
-    }
-    )
+      dispatch(initialize(blogs))
+    })
   }, [])
 
   useEffect(() => {
@@ -59,15 +57,16 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log('trying to log in with', username, password, ' ....')
+    console.log('trying to log in with', username)
 
     try {
       const user = await loginService.login({ username, password })
-      console.log('succesfull - logged in')
-      console.log('returned token: ', user.token)
+      console.log('succesfully logged in')
+
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
+      console.log('user added to the local storage')
       blogService.setToken(user.token)
 
       setUser(user)
@@ -80,8 +79,7 @@ const App = () => {
       }, 5000)
 
     } catch(e) {
-      console.log('login failed ... please check your credentials')
-      dispatch(createNotification('wrong credentials, please check your username and password'))
+      dispatch(createNotification('login failed, please check your credentials'))
       setTimeout(() => {
         dispatch(createNotification(null))
       }, 5000)
@@ -92,17 +90,15 @@ const App = () => {
     try{
       blogFormRef.current.toggleVisibility()
 
-      const addedBlog = await blogService.addBlog(blog)
-      console.log(addedBlog)
-      setBlogs(blogs.concat(addedBlog))
+      const response = await blogService.addBlog(blog)
+      dispatch(addBlog(response))
 
-      console.log('succesfully added ', addedBlog.title, '....')
-      dispatch(createNotification('blog succesfully added - ' + addedBlog.title))
+      console.log('succesfully added ', response.title)
+      dispatch(createNotification('blog succesfully added - ' + response.title))
       setTimeout(() => {
         dispatch(createNotification(null))
       }, 5000)
     } catch (e) {
-      console.log('sending a blog to the server failed')
       dispatch(createNotification('sending a blog to the server failed'))
       setTimeout(() => {
         dispatch(createNotification(null))
@@ -112,22 +108,17 @@ const App = () => {
 
   const updatingBlog = async (blog, id) => {
     try {
-      const updatedBlog = await blogService.updateBlog(blog, id)
+      const response = await blogService.updateBlog(blog, id)
+      dispatch(updateLikes(response))
 
-      // filteröidään vanha päivitetty blogi pois ja lisätään uusi blogi tilalle
-      const newBlogSet = blogs.filter(b => b.id.toString() !== id).concat(updatedBlog)
-      newBlogSet.sort((a,b) => b.likes-a.likes)
-      setBlogs(newBlogSet)
-
-      console.log('succesfully updated ', updatedBlog.title, '....')
-      dispatch(createNotification('blog succesfully updated - ' + updatedBlog.title))
+      console.log('succesfully updated ', response.title)
+      dispatch(createNotification('blog succesfully updated - ' + response.title))
       setTimeout(() => {
         dispatch(createNotification(null))
       }, 5000)
 
     } catch (e) {
       console.log('updating the blog failed')
-      dispatch(createNotification('updating the blog failed'))
       setTimeout(() => {
         dispatch(createNotification(null))
       }, 5000)
@@ -137,10 +128,7 @@ const App = () => {
   const removingBlog = async (id) => {
     try {
       await blogService.deleteBlog(id)
-      console.log('succesfully deleted ')
-
-      // filteröidään poistettu blogi pois blogilistasta
-      setBlogs(blogs.filter(b => b.id.toString() !== id))
+      dispatch(removeBlog(id))
 
       dispatch(createNotification('blog succesfully removed'))
       setTimeout(() => {
