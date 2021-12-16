@@ -1,15 +1,37 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import blogService from '../services/blogs'
+import { createNotification } from '../reducers/notificationReducer'
+import { addBlog } from '../reducers/blogReducer'
 
-const CreateBlog = ({ addingBlog }) => {
+const CreateBlog = () => {
 
   const [title, setTitle] = useState([])
   const [author, setAuthor] = useState([])
   const [url, setUrl] = useState([])
 
-  const handleAddingBlog = (event) => {
+  const dispatch = useDispatch()
+
+
+  const handleAddingBlog = async (event) => {
     event.preventDefault()
-    console.log('trying to add blog', title, author, ' ...')
-    addingBlog({ title, author, url })
+    try{
+      const response = await blogService.addBlog({ title, author, url })
+      dispatch(addBlog(response))
+
+      console.log('succesfully added ', response.title)
+      dispatch(createNotification('blog succesfully added - ' + response.title))
+      setTimeout(() => {
+        dispatch(createNotification(null))
+      }, 5000)
+    } catch (e) {
+      dispatch(createNotification('sending a blog to the server failed'))
+      setTimeout(() => {
+        dispatch(createNotification(null))
+      }, 5000)
+    }
+
+
     setTitle('')
     setAuthor('')
     setUrl('')

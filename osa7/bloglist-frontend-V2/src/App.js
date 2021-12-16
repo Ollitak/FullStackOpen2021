@@ -10,7 +10,7 @@ import userService from './services/users'
 import loginService from './services/login'
 import { useSelector, useDispatch } from 'react-redux'
 import { createNotification } from './reducers/notificationReducer'
-import { addBlog, initialize } from './reducers/blogReducer'
+import { initialize } from './reducers/blogReducer'
 import { addUser } from './reducers/userReducer'
 import {
   BrowserRouter as Router,
@@ -102,27 +102,6 @@ const App = () => {
     }
   }
 
-  const addingBlog = async (blog) => {
-    try{
-      blogFormRef.current.toggleVisibility()
-
-      const response = await blogService.addBlog(blog)
-      dispatch(addBlog(response))
-
-      console.log('succesfully added ', response.title)
-      dispatch(createNotification('blog succesfully added - ' + response.title))
-      setTimeout(() => {
-        dispatch(createNotification(null))
-      }, 5000)
-    } catch (e) {
-      dispatch(createNotification('sending a blog to the server failed'))
-      setTimeout(() => {
-        dispatch(createNotification(null))
-      }, 5000)
-    }
-  }
-
-
   const handleLogout = (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedUser')
@@ -132,9 +111,7 @@ const App = () => {
   const createBlogForm = () => {
     return (
       <Togglable ref={blogFormRef} buttonLabel={'create a new blog'}>
-        <CreateBlog
-          addingBlog={addingBlog}
-        />
+        <CreateBlog/>
       </Togglable>
     )
   }
@@ -177,14 +154,6 @@ const App = () => {
 
         <Route path = "/blogs/:id">
           <Blog></Blog>
-        </Route>
-
-        <Route path = "/blogs">
-          {user === null ? loginForm() : createBlogForm()}
-          <h2>list of blogs</h2>
-          {blogs.map(blog =>
-            <Blogs key={blog.id} blog={blog} />
-          )}
         </Route>
 
         <Route path = "/">
