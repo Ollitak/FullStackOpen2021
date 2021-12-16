@@ -13,5 +13,4 @@ export const addUser = (user) => {
   }
 }
 
-
 export default userReducer

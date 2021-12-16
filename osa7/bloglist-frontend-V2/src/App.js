@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import User from './components/User'
+import Users from './components/Users'
 import CreateBlog from './components/CreateBlog'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
+import userService from './services/users'
 import loginService from './services/login'
 import { useSelector, useDispatch } from 'react-redux'
 import { createNotification } from './reducers/notificationReducer'
 import { addBlog, updateLikes, removeBlog, initialize } from './reducers/blogReducer'
 import { addUser } from './reducers/userReducer'
+import {
+  BrowserRouter as Router,
+  Route, Switch
+} from 'react-router-dom'
 
 // declare a test user details if you will
 const testUser = 'Kayttaja'
@@ -17,8 +24,7 @@ const testPassword = 'Olli123'
 const App = () => {
   const [username, setUsername] = useState(testUser)
   const [password, setPassword] = useState(testPassword)
-
-  //const [user, setUser] = useState(null)
+  const [users, setUsers]= useState([])
 
   const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
@@ -31,6 +37,12 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs => {
       dispatch(initialize(blogs))
+    })
+  }, [])
+
+  useEffect(() => {
+    userService.getAll().then(u => {
+      setUsers(u)
     })
   }, [])
 
@@ -172,18 +184,43 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Router>
+      <h2>blogsapp</h2>
       <h1> {notification} </h1>
-
       {user === null ? null : logout()}
+      <Switch>
 
-      {user === null ? loginForm() : createBlogForm()}
+        <Route path = "/users/:id">
+          {user === null ? loginForm() : null}
+          <User users={users}/>
+        </Route>
 
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updatingBlog={updatingBlog} removingBlog={removingBlog} user={user} />
-      )}
-    </div>
+        <Route path = "/users">
+          {user === null ? loginForm() : null}
+          <h2>Users</h2>
+          <table>
+            <tbody>
+              <tr>
+                <th></th>
+                <th>blogs created</th>
+              </tr>
+              {users.map(user =>
+                <Users key={user.id} user={user}/>
+              )}
+            </tbody>
+          </table>
+        </Route>
+
+        <Route path = "/">
+          {user === null ? loginForm() : createBlogForm()}
+          <h2>list of blogs</h2>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} updatingBlog={updatingBlog} removingBlog={removingBlog} user={user} />
+          )}
+        </Route>
+
+      </Switch>
+    </Router>
   )
 }
 
