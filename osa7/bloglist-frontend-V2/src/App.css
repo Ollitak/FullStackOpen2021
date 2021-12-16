@@ -1,0 +1,32 @@
+a:hover {
+    color:blue;
+}
+
+
+.menu:link, .menu:visited {
+    background-color: grey;
+    color: white;
+    border: 1px solid white;
+    width: 100px;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.menu:hover, .menu:active {
+    background-color: green;
+    color: white;
+  }
+
+
+.log {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    width: 100px;
+    height: 20px;
+    text-align: center;
+    text-decoration: none;
+}
+

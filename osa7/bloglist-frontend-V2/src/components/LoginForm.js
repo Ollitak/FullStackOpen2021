@@ -4,6 +4,7 @@ import loginService from '../services/login'
 import { createNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { addUser } from '../reducers/userReducer'
+import '../App.css'
 
 // declare a test user details if you will
 const testUser = 'Kayttaja'
@@ -56,7 +57,7 @@ const LoginForm = () => {
         Password:
       <input id='password' type="password" value={password} onChange={e => setPassword(e.target.value)}></input>
       <br/>
-      <button id='loginbutton' type="submit">login</button>
+      <button className="log" id='loginbutton' type="submit">login</button>
     </form>
   )
 }

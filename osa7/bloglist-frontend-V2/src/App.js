@@ -13,11 +13,9 @@ import { initialize } from './reducers/blogReducer'
 import { addUser } from './reducers/userReducer'
 import {
   BrowserRouter as Router,
-  Route, Switch
+  Route, Switch, Link
 } from 'react-router-dom'
-
-
-
+import './App.css'
 
 const App = () => {
 
@@ -79,15 +77,23 @@ const App = () => {
     return (
       <div>
         <b> {user.username} logged in </b>
-        <button onClick={handleLogout}> log out </button>
+        <button className="log" onClick={handleLogout}> log out </button>
       </div>)
   }
 
   return (
     <Router>
-      <h2>blogsapp</h2>
-      <h1> {notification} </h1>
       {user === null ? loginForm() : logout()}
+
+      <div>
+        <Link className="menu" to="/blogs">blogs</Link>
+        <Link className="menu" to="/users">users</Link>
+      </div>
+
+      <h1> {notification} </h1>
+
+      <h2>blogsapp</h2>
+
       <Switch>
         <Route path = "/users/:id">
           <User users={users}/>
