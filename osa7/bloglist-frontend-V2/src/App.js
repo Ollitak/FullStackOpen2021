@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import Blogs from './components/Blogs'
 import User from './components/User'
 import Users from './components/Users'
 import CreateBlog from './components/CreateBlog'
@@ -9,7 +10,7 @@ import userService from './services/users'
 import loginService from './services/login'
 import { useSelector, useDispatch } from 'react-redux'
 import { createNotification } from './reducers/notificationReducer'
-import { addBlog, updateLikes, removeBlog, initialize } from './reducers/blogReducer'
+import { addBlog, initialize } from './reducers/blogReducer'
 import { addUser } from './reducers/userReducer'
 import {
   BrowserRouter as Router,
@@ -121,43 +122,6 @@ const App = () => {
     }
   }
 
-  const updatingBlog = async (blog, id) => {
-    try {
-      const response = await blogService.updateBlog(blog, id)
-      dispatch(updateLikes(response))
-
-      console.log('succesfully updated ', response.title)
-      dispatch(createNotification('blog succesfully updated - ' + response.title))
-      setTimeout(() => {
-        dispatch(createNotification(null))
-      }, 5000)
-
-    } catch (e) {
-      console.log('updating the blog failed')
-      setTimeout(() => {
-        dispatch(createNotification(null))
-      }, 5000)
-    }
-  }
-
-  const removingBlog = async (id) => {
-    try {
-      await blogService.deleteBlog(id)
-      dispatch(removeBlog(id))
-
-      dispatch(createNotification('blog succesfully removed'))
-      setTimeout(() => {
-        dispatch(createNotification(null))
-      }, 5000)
-    } catch (e) {
-      console.log('removing the blog failed')
-      dispatch(createNotification('removing the blog failed'))
-      setTimeout(() => {
-        dispatch(createNotification(null))
-      }, 5000)
-    }
-
-  }
 
   const handleLogout = (event) => {
     event.preventDefault()
@@ -211,11 +175,23 @@ const App = () => {
           </table>
         </Route>
 
+        <Route path = "/blogs/:id">
+          <Blog></Blog>
+        </Route>
+
+        <Route path = "/blogs">
+          {user === null ? loginForm() : createBlogForm()}
+          <h2>list of blogs</h2>
+          {blogs.map(blog =>
+            <Blogs key={blog.id} blog={blog} />
+          )}
+        </Route>
+
         <Route path = "/">
           {user === null ? loginForm() : createBlogForm()}
           <h2>list of blogs</h2>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} updatingBlog={updatingBlog} removingBlog={removingBlog} user={user} />
+            <Blogs key={blog.id} blog={blog} />
           )}
         </Route>
 

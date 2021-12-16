@@ -1,26 +1,22 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useParams } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import blogService from '../services/blogs'
+import { createNotification } from '../reducers/notificationReducer'
+import { updateLikes, removeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, updatingBlog, removingBlog, user }) => {
-  const [showinfo, setShowinfo] = useState([])
+const Blog = () => {
+  const id = useParams().id
+  const dispatch = useDispatch()
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
+  const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
 
-  const handleViewBlog = () => {
-    setShowinfo(showinfo.concat(blog.id.toString()))
-  }
+  const blog = blogs.find(b => b.id === id.toString())
 
-  const handleHideBlog = () => {
-    setShowinfo(showinfo.filter(i => i.toString() !== blog.id.toString()))
-  }
+  if(!blog) return null
 
   const handleUpdate = async () => {
-    console.log('updating blog...')
     const updatedblog = {
       user: blog.user.id,
       likes: blog.likes + 1,
@@ -28,60 +24,58 @@ const Blog = ({ blog, updatingBlog, removingBlog, user }) => {
       title: blog.title,
       url: blog.url
     }
-    await updatingBlog(updatedblog, blog.id.toString())
+    try {
+      const response = await blogService.updateBlog(updatedblog, id)
+      dispatch(updateLikes(response))
+      console.log('succesfully updated ', response.title)
+      dispatch(createNotification('blog succesfully updated - ' + response.title))
+      setTimeout(() => {
+        dispatch(createNotification(null))
+      }, 5000)
+
+    } catch (e) {
+      console.log('updating the blog failed')
+      setTimeout(() => {
+        dispatch(createNotification(null))
+      }, 5000)
+    }
   }
 
   const handleDelete = async () => {
-    console.log('removing blog...')
-    await removingBlog(blog.id.toString())
-  }
+    try {
+      await blogService.deleteBlog(id)
+      dispatch(removeBlog(id))
 
-
-
-  const shortinformation = () => {
-    return(
-      <div>
-        {blog.title}
-        <button onClick={handleViewBlog}> view </button>
-      </div>
-    )
-  }
-
-  let currentUser
-  if(user) currentUser = user.username
-  else currentUser = null
-
-
-  const longinformation = () => {
-    return(
-      <div className={'blog'}>
-        Title: {blog.title}
-        <button onClick={handleHideBlog}> hide </button>
-        <br/>
-        Author: {blog.author}
-        <br/>
-        Likes: {blog.likes}
-        <button onClick={handleUpdate}> like </button>
-        <br/>
-        Username: {blog.user.username}
-        <br/>
-        {blog.user.username === currentUser
-          ? <button onClick={handleDelete}> remove </button>
-          : null
-        }
-      </div>
-    )
+      dispatch(createNotification('blog succesfully removed'))
+      setTimeout(() => {
+        dispatch(createNotification(null))
+      }, 5000)
+    } catch (e) {
+      console.log('removing the blog failed')
+      dispatch(createNotification('removing the blog failed'))
+      setTimeout(() => {
+        dispatch(createNotification(null))
+      }, 5000)
+    }
   }
 
   return (
-    <div style={blogStyle}>
-      {showinfo.includes(blog.id.toString()) ? longinformation() : shortinformation()}
+    <div>
+      <h1>{blog.title}</h1>
+      <a href={`//${blog.url}`}> {blog.url} </a>
       <br/>
+      {blog.likes} likes
+      <br/>
+      added by {blog.user.username}
+      <br/>
+      <button onClick={handleUpdate}> like </button>
+      <br/>
+      {blog.user.username === user.username
+        ? <button onClick={handleDelete}> remove </button>
+        : null
+      }
     </div>
   )
-
-
 }
-
 
 export default Blog
