@@ -1,32 +1,113 @@
-a:hover {
-    color:blue;
+.ulelement {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgb(19, 0, 128);
 }
 
-
-.menu:link, .menu:visited {
-    background-color: grey;
+.menu {
     color: white;
-    border: 1px solid white;
-    width: 100px;
-    padding: 10px 15px;
+    padding: 14px 30px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
+    float: left;
 }
 
-.menu:hover, .menu:active {
-    background-color: green;
+.menu:hover {
+    background-color: rgb(37, 26, 97);
     color: white;
   }
 
 
 .log {
-    background-color: black;
+    background-color: rgb(59, 52, 52);
     color: white;
     border: 1px solid white;
-    width: 100px;
-    height: 20px;
+    width: 70px;
+    height: 30px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 20px;
+}
+
+.log:hover {
+    background-color: black;
+    color: white;
+  }
+
+input {
+    width: 200px;
+    padding: 6px 6px;
+    margin: 2px;
+    border: none;
+    border-bottom: 2px solid green;
+    transition: width 0.4s ease-in-out;
+}
+
+input:focus {
+    width: 30%;
+    background-color: darkseagreen;
+}
+
+button {
+    background-color: rgb(59, 52, 52);
+    color: white;
+    border: 1px solid white;
+    border-radius: 10px;
+    width: 200px;
+    height: 35px;
+    margin: 2px;
+    display: block;
+}
+
+button:hover {
+    background-color: black;
+    color: white;
+}
+
+.content {
+    max-width: 800px;
+    margin: auto;
+}
+
+
+.bloglistdiv {
+    margin: 0px;
+    padding: 0px;
+    height: 30px;
+    background-color: rgb(222, 222, 223);
+    overflow: hidden;
+}
+
+.bloglist {
+    color: black;
+    float: left;
+    width: 100%;
+    height: 100%;
+    padding: 7px;
     text-align: center;
     text-decoration: none;
 }
 
+.bloglist:hover {
+    background-color: rgb(37, 26, 97);
+    color: white;
+}
+
+
+.apptitle {
+    color:dodgerblue;
+    font-family: Sans-serif;
+    font-size: 50px;
+    text-align: center;
+    margin:auto;
+}
+
+.appsubtitle {
+    color:dodgerblue;
+    font-family: Sans-serif;
+    font-size: 30px;
+    font-style: italic;
+    text-align: center;
+    margin:auto;
+}

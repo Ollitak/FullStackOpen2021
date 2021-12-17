@@ -6,9 +6,9 @@ import { addBlog } from '../reducers/blogReducer'
 
 const CreateBlog = () => {
 
-  const [title, setTitle] = useState([])
-  const [author, setAuthor] = useState([])
-  const [url, setUrl] = useState([])
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const dispatch = useDispatch()
 
@@ -31,7 +31,6 @@ const CreateBlog = () => {
       }, 5000)
     }
 
-
     setTitle('')
     setAuthor('')
     setUrl('')
@@ -42,14 +41,11 @@ const CreateBlog = () => {
       <div>
         <h2> create new blog</h2>
         <form onSubmit={handleAddingBlog}>
-          title:
-          <input id="titleInput" type="text" value={title} onChange={e => setTitle(e.target.value)}></input>
+          <input id="titleInput" placeholder="Title" type="text" value={title} onChange={e => setTitle(e.target.value)}></input>
           <br/>
-          author:
-          <input id="authorInput" type="text" value={author} onChange={e => setAuthor(e.target.value)}></input>
+          <input id="authorInput" placeholder="Author" type="text" value={author} onChange={e => setAuthor(e.target.value)}></input>
           <br/>
-          url:
-          <input id="urlInput" type="text" value={url} onChange={e => setUrl(e.target.value)}></input>
+          <input id="urlInput" placeholder="url" type="text" value={url} onChange={e => setUrl(e.target.value)}></input>
           <br/>
           <button id="createButton" type="submit">create</button>
         </form>

@@ -82,51 +82,56 @@ const App = () => {
   }
 
   return (
-    <Router>
-      {user === null ? loginForm() : logout()}
+    <div className="content">
+      <Router>
+        {user === null ? loginForm() : logout()}
+        <br/>
+        <ul className="ulelement">
+          <Link className="menu" to="/blogs">blogs</Link>
+          <Link className="menu" to="/users">users</Link>
+        </ul>
 
-      <div>
-        <Link className="menu" to="/blogs">blogs</Link>
-        <Link className="menu" to="/users">users</Link>
-      </div>
+        <h1> {notification} </h1>
 
-      <h1> {notification} </h1>
+        <div>
+          <h2 className={'apptitle'}>blogs app</h2>
+          <h2 className={'appsubtitle'}> {'< an app for blogs >'} </h2>
+        </div>
 
-      <h2>blogsapp</h2>
+        <Switch>
+          <Route path = "/users/:id">
+            <User users={users}/>
+          </Route>
 
-      <Switch>
-        <Route path = "/users/:id">
-          <User users={users}/>
-        </Route>
+          <Route path = "/users">
+            <h2>Users</h2>
+            <table>
+              <tbody>
+                <tr>
+                  <th></th>
+                  <th>blogs created</th>
+                </tr>
+                {users.map(user =>
+                  <Users key={user.id} user={user}/>
+                )}
+              </tbody>
+            </table>
+          </Route>
 
-        <Route path = "/users">
-          <h2>Users</h2>
-          <table>
-            <tbody>
-              <tr>
-                <th></th>
-                <th>blogs created</th>
-              </tr>
-              {users.map(user =>
-                <Users key={user.id} user={user}/>
-              )}
-            </tbody>
-          </table>
-        </Route>
+          <Route path = "/blogs/:id">
+            <Blog></Blog>
+          </Route>
 
-        <Route path = "/blogs/:id">
-          <Blog></Blog>
-        </Route>
-
-        <Route path = "/">
-          {user === null ? null : createBlogForm()}
-          <h2>list of blogs</h2>
-          {blogs.map(blog =>
-            <Blogs key={blog.id} blog={blog} />
-          )}
-        </Route>
-      </Switch>
-    </Router>
+          <Route path = "/">
+            {user === null ? null : createBlogForm()}
+            <h2>list of blogs</h2>
+            {blogs.map(blog =>
+              <Blogs key={blog.id} blog={blog} />
+            )}
+          </Route>
+        </Switch>
+      </Router>
+    </div>
   )
 }
 
