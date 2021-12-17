@@ -59,7 +59,6 @@ const Blog = () => {
       }, 5000)
     }
   }
-
   return (
     <div>
       <h1>{blog.title}</h1>
@@ -75,6 +74,8 @@ const Blog = () => {
         ? <button onClick={handleDelete}> remove </button>
         : null
       }
+      <h2>comments</h2>
+      {blog.comments.map((comment, id) => <li key={id}>{comment}</li>)}
     </div>
   )
 }
