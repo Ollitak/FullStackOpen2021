@@ -30,7 +30,8 @@ blogsRouter.post('/:id/comments', async (request, response) => {
   }
 
   // Päivitetään uusi blogi tietokantaan
-  const r = await Blog.findByIdAndUpdate(request.params.id, updatedBlog, {new: true})
+  await Blog.findByIdAndUpdate(request.params.id, updatedBlog, {new: true})
+  const r = await Blog.findById(request.params.id).populate('user')
   response.status(201).json(r)
 })
 

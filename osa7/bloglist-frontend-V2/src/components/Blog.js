@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import blogService from '../services/blogs'
 import { createNotification } from '../reducers/notificationReducer'
-import { updateLikes, removeBlog } from '../reducers/blogReducer'
+import { updateLikes, removeBlog, updateComments } from '../reducers/blogReducer'
 
 const Blog = () => {
   const id = useParams().id
   const dispatch = useDispatch()
+  const [comment, setComment] = useState('')
 
   const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
@@ -59,6 +60,13 @@ const Blog = () => {
       }, 5000)
     }
   }
+
+  const newComment = async () => {
+    const response = await blogService.addComment(id, { comment: comment })
+    dispatch(updateComments(response))
+    setComment('')
+  }
+
   return (
     <div>
       <h1>{blog.title}</h1>
@@ -75,6 +83,8 @@ const Blog = () => {
         : null
       }
       <h2>comments</h2>
+      <input value={comment} onChange={e => setComment(e.target.value)}></input>
+      <button onClick={newComment}>add comment</button>
       {blog.comments.map((comment, id) => <li key={id}>{comment}</li>)}
     </div>
   )

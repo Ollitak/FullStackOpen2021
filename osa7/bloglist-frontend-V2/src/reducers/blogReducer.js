@@ -11,6 +11,8 @@ const blogReducer = (state = [], action) => {
   case 'UPDATE_LIKES':
     // vaihdetaan vanha blogi parametrin uuteen blogiin ja sortataan blogit
     return sortBlogs(state.map(s => s.id === action.blog.id ? action.blog : s))
+  case 'UPDATE_COMMENTS':
+    return sortBlogs(state.map(s => s.id === action.blog.id ? action.blog : s))
   case 'REMOVE_BLOG':
     return state.filter(b => b.id.toString() !== action.id)
   default: return state
@@ -27,6 +29,13 @@ export const addBlog = (blog) => {
 export const updateLikes = (blog) => {
   return {
     type: 'UPDATE_LIKES',
+    blog: blog
+  }
+}
+
+export const updateComments = (blog) => {
+  return {
+    type: 'UPDATE_COMMENTS',
     blog: blog
   }
 }
