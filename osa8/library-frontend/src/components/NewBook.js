@@ -7,7 +7,12 @@ const CREATE_BOOK = gql`
     {
       title
       published
-      author
+      author {
+        born
+        bookCount
+        name
+        id
+      }
       genres
       id
     }
@@ -19,7 +24,12 @@ query {
   allBooks {
     title
     published
-    author
+    author {
+      born
+      bookCount
+      name
+      id
+    }
     genres
     id
   }
