@@ -93,23 +93,36 @@ const resolvers = {
     addBook: async (root, args) => {
       // if authors do not yet include the newly added book author,
       // let's put it in
-      const author = await Author.findOne({ name: args.author })
-      if(!author){
-        const newAuthor = new Author({ name: args.author })
-        await newAuthor.save()
-        const book = new Book({ ...args, author: newAuthor._id })
+      try {
+        const author = await Author.findOne({ name: args.author })
+        if(!author){
+          const newAuthor = new Author({ name: args.author })
+          await newAuthor.save()
+          const book = new Book({ ...args, author: newAuthor._id })
+          return book.save(book)
+        }
+        const book = new Book({ ...args, author: author._id })
         return book.save(book)
+    
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
       }
-      const book = new Book({ ...args, author: author._id })
-      return book.save(book)
-
+      
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOne({name: args.name})
       if(!author) return null
       // filter out the edited authors, create new author and concat it to the authors list
       author.born = args.setBornTo
-      return author.save()
+      try {
+        return author.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
     }
   }
 }
