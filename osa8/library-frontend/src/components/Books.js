@@ -22,10 +22,6 @@ const Books = (props) => {
     })
   })
 
-  console.log("TEST")
-  console.log(allBooks)
-  console.log(filteredBooks)
-
   if (!props.show) {
     return null
   } 
@@ -56,6 +52,7 @@ const Books = (props) => {
       </table>
       <div>
         {genrelist.map((g,id) => <button key={id} onClick={() => setFilter(g)}>{g}</button>)}
+        <button onClick={() => setFilter('all')}>all genres</button>
       </div>
     </div>
   )
