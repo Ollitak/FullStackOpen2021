@@ -25,7 +25,6 @@ const Books = (props) => {
 
   useEffect(() => {
     if(booksResult.data) {
-      console.log("HERE")
       setBooks(booksResult.data.allBooks)
     }
   }, [booksResult.data])
@@ -43,16 +42,11 @@ const Books = (props) => {
     return null
   } 
 
-  console.log("----")
-  console.log(books)
-  console.log(booksResult)
-
-
-  const filterHandler = (filter) => {
+  const filterHandler = async (filter) => {
     if(filter === 'all') {
       setBooks(allBooks)
     } else {
-      getBooks({ variables: { genre: filter } })
+      await getBooks({ variables: { genre: filter } })
     }
   }
 

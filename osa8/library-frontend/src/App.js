@@ -7,7 +7,7 @@ import Recommendations from './components/Recommendations'
 
 
 
-import { gql, useQuery, useApolloClient } from '@apollo/client'
+import { gql, useQuery, useLazyQuery, useApolloClient } from '@apollo/client'
 
 const ALL_BOOKSANDAUTHORS = gql`
 query {
@@ -32,12 +32,23 @@ query {
 }
 `
 
+
+const FAVORITE_GENRE = gql`
+query {
+  me {
+    username
+    favoriteGenre
+    id
+  }
+}
+`
+
 const App = () => {
   const [page, setPage] = useState('login')
   const [token, setToken] = useState(null)
   const result = useQuery(ALL_BOOKSANDAUTHORS)
+  const [getFavGenre, favGenreResult] = useLazyQuery(FAVORITE_GENRE)
   const client = useApolloClient()
-
 
   if(result.loading){
     return <div>loading...</div>
@@ -49,6 +60,14 @@ const App = () => {
     client.resetStore()
   }
 
+  // When recommendation button is pressed, change setpage to recommendations
+  // and retreive the users favorite genre from querying for "me".
+  // favGenreResult is passed to recommendations component as a props
+  const recommendationHandler = () => {
+    setPage('recommendations')
+    getFavGenre()
+  }
+
   return (
     <div>
       <div>
@@ -57,7 +76,7 @@ const App = () => {
         {token ?
           <span>
             <button onClick={() => setPage('add')}>add book</button>
-            <button onClick={() => setPage('recommendations')}>recommendations</button>
+            <button onClick={recommendationHandler}>recommendations</button>
             <button onClick={logout}>logout</button> 
           </span>
           :
@@ -86,6 +105,7 @@ const App = () => {
       />
 
       <Recommendations
+        result = {favGenreResult}
         show={page === 'recommendations'}
         books={result.data.allBooks}
       />
