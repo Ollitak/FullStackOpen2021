@@ -5,9 +5,7 @@ import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
 import Recommendations from './components/Recommendations'
 
-
-
-import { gql, useQuery, useLazyQuery, useApolloClient } from '@apollo/client'
+import { gql, useQuery, useLazyQuery, useSubscription, useApolloClient } from '@apollo/client'
 
 const ALL_BOOKSANDAUTHORS = gql`
 query {
@@ -32,12 +30,28 @@ query {
 }
 `
 
-
 const FAVORITE_GENRE = gql`
 query {
   me {
     username
     favoriteGenre
+    id
+  }
+}
+`
+
+const BOOK_ADDED = gql `
+subscription {
+  bookAdded {
+    title
+    published
+    author {
+      name
+      bookCount
+      born
+      id
+    }
+    genres
     id
   }
 }
@@ -49,6 +63,30 @@ const App = () => {
   const result = useQuery(ALL_BOOKSANDAUTHORS)
   const [getFavGenre, favGenreResult] = useLazyQuery(FAVORITE_GENRE)
   const client = useApolloClient()
+
+  const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => 
+      set.map(p => p.id).includes(object.id)  
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKSANDAUTHORS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKSANDAUTHORS,
+        data: {
+           allBooks : dataInStore.allBooks.concat(addedBook),
+           allAuthors : dataInStore.allAuthors
+         }
+      })
+    }   
+  }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert(`${subscriptionData.data.bookAdded.title} was just added`)
+      const addedBook = subscriptionData.data.bookAdded
+      updateCacheWith(addedBook)
+    }
+  })
 
   if(result.loading){
     return <div>loading...</div>
