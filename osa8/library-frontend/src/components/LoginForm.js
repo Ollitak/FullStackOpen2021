@@ -26,8 +26,6 @@ const LoginForm = ({ show, setToken, setPage }) => {
   useEffect(() => {
     if(result.data){
       const token = result.data.login.value
-      console.log("result data")
-      console.log(result.data)
       setToken(token)
       setPage('authors')
       localStorage.setItem('user-token', token)

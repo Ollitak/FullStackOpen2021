@@ -1,17 +1,34 @@
+import React, { useState, useEffect } from 'react'
+import { gql, useLazyQuery } from '@apollo/client'
 
-import React, { useState } from 'react'
+
+const GENRE_FILTERED_BOOKS2 = gql`
+query AllBooks($genre: String) {
+  allBooks(genre: $genre) {
+    title
+    published
+    author {
+      name
+    }
+    genres
+  }
+}
+`
+
 
 const Books = (props) => {
-  const [filter, setFilter] = useState('all')
+  const [books, setBooks] = useState(props.books)
+  const [getBooks, booksResult] = useLazyQuery(GENRE_FILTERED_BOOKS2)
   
 
   const allBooks = props.books 
-  let filteredBooks = [...allBooks]
 
-  if(filter !== 'all') {
-    console.log(filter)
-    filteredBooks = allBooks.filter(b => b.genres.includes(filter))
-  } 
+  useEffect(() => {
+    if(booksResult.data) {
+      console.log("HERE")
+      setBooks(booksResult.data.allBooks)
+    }
+  }, [booksResult.data])
 
   let genrelist = []
   allBooks.forEach(b => {
@@ -25,6 +42,19 @@ const Books = (props) => {
   if (!props.show) {
     return null
   } 
+
+  console.log("----")
+  console.log(books)
+  console.log(booksResult)
+
+
+  const filterHandler = (filter) => {
+    if(filter === 'all') {
+      setBooks(allBooks)
+    } else {
+      getBooks({ variables: { genre: filter } })
+    }
+  }
 
   return (
     <div>
@@ -41,7 +71,7 @@ const Books = (props) => {
               published
             </th>
           </tr>
-          {filteredBooks.map(a =>
+          {books.map(a =>
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
@@ -51,8 +81,8 @@ const Books = (props) => {
         </tbody>
       </table>
       <div>
-        {genrelist.map((g,id) => <button key={id} onClick={() => setFilter(g)}>{g}</button>)}
-        <button onClick={() => setFilter('all')}>all genres</button>
+        {genrelist.map((g,id) => <button key={id} onClick={() => filterHandler(g)}>{g}</button>)}
+        <button onClick={() => filterHandler('all')}>all genres</button>
       </div>
     </div>
   )
