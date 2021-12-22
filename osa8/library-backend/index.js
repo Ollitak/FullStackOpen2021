@@ -99,6 +99,7 @@ const resolvers = {
       return genreAndAuthorFilteredBooks
     },
     allAuthors: async (root, args) => {
+      const books = await Book.find({})
       return await Author.find({})
     },
     me: (root, args, context) => {
@@ -108,8 +109,7 @@ const resolvers = {
 
   Author: {
     bookCount: async (root) => {
-      const books = await Book.find({ author: root._id })
-      return books.length
+      return(root.books.length)
     }
   },
 
@@ -123,32 +123,42 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args, context) => {  
-    const currentUser = context.currentUser
+      const currentUser = context.currentUser
+      if (!currentUser) {
+          throw new AuthenticationError("not authenticated")
+      }
 
-    if (!currentUser) {
-      throw new AuthenticationError("not authenticated")
-    }
-
-      // if authors do not yet include the newly added book author,
-      // let's put it in 
       try {
-        const author = await Author.findOne({ name: args.author })
-        if(!author){
-          const newAuthor = new Author({ name: args.author })
-          await newAuthor.save()
-          const book = new Book({ ...args, author: newAuthor._id })
-          return book.save(book)
-        }
-        const book = new Book({ ...args, author: author._id })
+      const author = await Author.findOne({ name: args.author })
+      // if authors do not yet include the newly added book author, let's put it in 
+      if(!author){
+        const newAuthor = new Author({ name: args.author })
+        const book = new Book({ ...args, author: newAuthor._id })
+        await newAuthor.save()
+
+        // retreive the newly added author in order to add the book reference to it
+        const newlyAddedAuthor = await Author.findOne({ name: args.author })
+        newlyAddedAuthor.books = [book._id]
+        await newlyAddedAuthor.save()
+
         pubsub.publish('BOOK_ADDED', { bookAdded: book })
         return book.save(book)
-    
+      }
+      // if author was found, just create new book and add the book id
+      // to the corresponding author
+      const book = new Book({ ...args, author: author._id })
+      author.books = author.books.concat(book._id)
+
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
+
+      await author.save()
+      return book.save(book)
+
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
       }
-      
     },
     editAuthor: async (root, args, context) => {
       const currentUser = context.currentUser
