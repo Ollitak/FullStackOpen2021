@@ -1,4 +1,4 @@
-type bmiType = 'underweight' | 'normal weight' | 'overweight' | 'obese'
+type bmiType = 'underweight' | 'normal weight' | 'overweight' | 'obese';
 
 interface bmiParameters {
   heigth: number;
@@ -13,23 +13,24 @@ const parseArguments = (args: Array<string>): bmiParameters => {
     return {
       heigth: Number(args[2]),
       weight: Number(args[3])
-    }
+    };
   } else {
     throw new Error('Values were not numbers');
   }
-}
+};
 
-const calculateBMI =  (h: number, w: number): bmiType => {
-  const bmi = w / Math.pow(h/100 ,2)
-  if(bmi < 18.5) return 'underweight'
-  else if (bmi < 25.0) return 'normal weight'
-  else if (bmi < 30) return 'overweight'
-  else return 'obese'
-}
+export const calculateBMI =  (h: number, w: number): bmiType => {
+  const bmi = w / Math.pow(h/100 ,2);
+  if(bmi < 18.5) return 'underweight';
+  else if (bmi < 25.0) return 'normal weight';
+  else if (bmi < 30) return 'overweight';
+  else return 'obese';
+};
 
 try {
-  const { heigth, weight } = parseArguments(process.argv)
-  console.log(calculateBMI(heigth, weight))
+  const { heigth, weight } = parseArguments(process.argv);
+  console.log(calculateBMI(heigth, weight));
 } catch (error) {
-  console.log(error.message)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  console.log(error.message);
 }
