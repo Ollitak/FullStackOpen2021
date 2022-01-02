@@ -45,11 +45,11 @@ const PatientByIdPage = () => {
 
   return (
     <div>
-    <h2>{currentPatient.name}</h2>
-    <p>gender: {currentPatient.gender}</p>
-    <p>ssn: {currentPatient.ssn}</p>
-    <p>occupation: {currentPatient.occupation}</p>
-    <p><Entries entry={currentPatient.entries}/></p>
+      <h2>{currentPatient.name}</h2>
+      <p>gender: {currentPatient.gender}</p>
+      <p>ssn: {currentPatient.ssn}</p>
+      <p>occupation: {currentPatient.occupation}</p>
+      <Entries entry={currentPatient.entries}/>
     </div>
   );
 };
