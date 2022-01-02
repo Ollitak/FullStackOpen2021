@@ -6,6 +6,8 @@ import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 
 import { addPatientAlldata } from "../state";
+import Entries from "./Entries";
+
 
 
 const PatientByIdPage = () => {
@@ -47,7 +49,7 @@ const PatientByIdPage = () => {
     <p>gender: {currentPatient.gender}</p>
     <p>ssn: {currentPatient.ssn}</p>
     <p>occupation: {currentPatient.occupation}</p>
-    <p>entries: {currentPatient.entries}</p>
+    <p><Entries entry={currentPatient.entries}/></p>
     </div>
   );
 };
