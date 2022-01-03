@@ -1,22 +1,41 @@
 import React from 'react';
 import { Modal, Segment } from 'semantic-ui-react';
-import AddEntryForm, { EntryFormValues } from './AddEntryForm';
+import EntryForms, { HealthCheckEntryFormValues, OccupationalEntryFormValues } from './AddEntryForm';
 
-interface Props {
+interface HealthCheckProps {
   modalOpen: boolean;
   onClose: () => void;
-  onSubmit: (values: EntryFormValues) => void;
+  onSubmit: (values: HealthCheckEntryFormValues) => void;
   error?: string;
 }
 
-const AddEntryModal = ({ modalOpen, onClose, onSubmit, error }: Props) => (
+interface OccupationalProps {
+  modalOpen: boolean;
+  onClose: () => void;
+  onSubmit: (values: OccupationalEntryFormValues) => void;
+  error?: string;
+}
+
+
+const AddHealthCheckEntryModal = ({ modalOpen, onClose, onSubmit, error }: HealthCheckProps) => (
   <Modal open={modalOpen} onClose={onClose} centered={false} closeIcon>
     <Modal.Header>Add a new healthcheck entry</Modal.Header>
     <Modal.Content>
       {error && <Segment inverted color="red">{`Error: ${error}`}</Segment>}
-      <AddEntryForm onSubmit={onSubmit} onCancel={onClose} />
+      <EntryForms.AddHealthCheckEntryForm onSubmit={onSubmit} onCancel={onClose} />
     </Modal.Content>
   </Modal>
 );
 
-export default AddEntryModal;
+const AddOccupationalEntryModal = ({ modalOpen, onClose, onSubmit, error }: OccupationalProps) => (
+  <Modal open={modalOpen} onClose={onClose} centered={false} closeIcon>
+    <Modal.Header>Add a new healthcheck entry</Modal.Header>
+    <Modal.Content>
+      {error && <Segment inverted color="red">{`Error: ${error}`}</Segment>}
+      <EntryForms.AddOccupationalEntryForm onSubmit={onSubmit} onCancel={onClose} />
+    </Modal.Content>
+  </Modal>
+);
+
+
+export default { AddHealthCheckEntryModal, AddOccupationalEntryModal };
