@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import EntryModal from "../AddEntryModal";
-import { HealthCheckEntryFormValues, OccupationalEntryFormValues } from "../AddEntryModal/AddEntryForm";
+import { HealthCheckEntryFormValues, HospitalEntryFormValues, OccupationalEntryFormValues } from "../AddEntryModal/AddEntryForm";
 import { Button } from "semantic-ui-react";
 
 
@@ -16,6 +16,7 @@ const PatientByIdPage = () => {
   const [{ patientsAlldata }, dispatch] = useStateValue();
   const [healthCheckModalOpen, setHealthCheckModalOpen] = React.useState<boolean>(false);
   const [occupationalModalOpen, setOccupationalModalOpen] = React.useState<boolean>(false);
+  const [hospitalModalOpen, setHospitalModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | undefined>();
   const { id } = useParams<{ id: string }>();
 
@@ -61,6 +62,17 @@ const PatientByIdPage = () => {
     }
   };
 
+  const submitHospitalModel =  async (values: HospitalEntryFormValues) => {
+    try {
+      const response = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${id}`, values);
+      dispatch(addPatientAlldata(response.data));
+      closeHospitalModal();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const openHealthCheckModal = (): void => setHealthCheckModalOpen(true);
 
   const closeHealthCheckModal = (): void => {
@@ -72,6 +84,13 @@ const PatientByIdPage = () => {
 
   const closeOccupationalModal = (): void => {
     setOccupationalModalOpen(false);
+    setError(undefined);
+  };
+
+  const openHospitalModal = (): void => setHospitalModalOpen(true);
+
+  const closeHospitalModal = (): void => {
+    setHospitalModalOpen(false);
     setError(undefined);
   };
 
@@ -102,9 +121,16 @@ const PatientByIdPage = () => {
         error={error}
         onClose={closeOccupationalModal}
       />
+      <EntryModal.AddHospitalEntryModal
+        modalOpen={hospitalModalOpen}
+        onSubmit={submitHospitalModel}
+        error={error}
+        onClose={closeHospitalModal}
+      />
       <br/>
       <Button onClick={() => openHealthCheckModal()}>Add a new healthcheck entry</Button>
       <Button onClick={() => openOccupationalModal()}>Add a new occupational healthcare entry</Button>
+      <Button onClick={() => openHospitalModal()}>Add a new hospital entry</Button>
     </div>
   );
 };

@@ -45,8 +45,6 @@ const App = () => {
     void fetchDiagnosesList();
   }, [dispatch]);
 
-
-
   return (
     <div className="App">
       <Router>

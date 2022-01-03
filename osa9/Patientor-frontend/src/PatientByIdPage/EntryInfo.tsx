@@ -6,6 +6,7 @@ import { useStateValue } from "../state";
 
 const HospitalEntryComponent = ({ hospitalEntry }: { hospitalEntry: HospitalEntry}) => {
   const [{ diagnoses },] = useStateValue();
+
   return (
     <p>
       <b>{hospitalEntry.date}</b> <br/>
